@@ -17,10 +17,17 @@ interface SubService {
   slug: string;
 }
 
+interface ServiceCategory {
+  id: number;
+  name: string;
+  description?: string;
+  created_at?: string;
+}
+
 export default function AddService({ onClose, onAdd }: AddServiceProps) {
   const [name, setName] = useState("");
   const [categoryId, setCategoryId] = useState<number | null>(null);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [subServices, setSubServices] = useState<SubService[]>([]);
   const [errors, setErrors] = useState({
     name: "",

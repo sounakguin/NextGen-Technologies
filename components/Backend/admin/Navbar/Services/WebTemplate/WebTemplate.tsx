@@ -7,6 +7,8 @@ import { Icon } from "@/components/UI/icons";
 import { Pagination } from "@/components/UI/Pagination";
 import { Edit, Eye, Trash } from "lucide-react";
 import AddWebTemplate from "./AddWebTemplate";
+import EditWebTemplate from "./EditWebTemplate";
+import ViewWebTemplate from "./ViewWebTemplate";
 import WebTemplateCategory from "./WebTemplateCategory";
 
 interface WebTemplate {
@@ -27,6 +29,11 @@ export default function WebTemplate() {
   const [error, setError] = useState<string | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(
+    null
+  );
   const [currentPage, setCurrentPage] = useState(1);
 
   const supabase = createClient();
@@ -153,6 +160,24 @@ export default function WebTemplate() {
                   <td className="px-6 py-4 text-sm text-gray-800 text-center">
                     <div className="flex justify-end gap-2">
                       <CustomButton
+                        onClick={() => {
+                          setSelectedTemplateId(template.id);
+                          setIsViewModalOpen(true);
+                        }}
+                        variant="primary"
+                      >
+                        <Icon icon={Eye} size={16} />
+                      </CustomButton>
+                      <CustomButton
+                        onClick={() => {
+                          setSelectedTemplateId(template.id);
+                          setIsEditModalOpen(true);
+                        }}
+                        variant="secondary"
+                      >
+                        <Icon icon={Edit} size={16} />
+                      </CustomButton>
+                      <CustomButton
                         onClick={() => handleDeleteWebTemplate(template.id)}
                         variant="danger"
                       >
@@ -177,6 +202,27 @@ export default function WebTemplate() {
         <AddWebTemplate
           onClose={() => setIsAddModalOpen(false)}
           onAdd={fetchWebTemplates}
+        />
+      )}
+
+      {isEditModalOpen && selectedTemplateId && (
+        <EditWebTemplate
+          templateId={selectedTemplateId}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setSelectedTemplateId(null);
+          }}
+          onEdit={fetchWebTemplates}
+        />
+      )}
+
+      {isViewModalOpen && selectedTemplateId && (
+        <ViewWebTemplate
+          templateId={selectedTemplateId}
+          onClose={() => {
+            setIsViewModalOpen(false);
+            setSelectedTemplateId(null);
+          }}
         />
       )}
 

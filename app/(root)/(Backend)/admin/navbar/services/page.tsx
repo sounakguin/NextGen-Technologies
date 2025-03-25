@@ -3,8 +3,6 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Dashboard from "@/components/Backend/admin/dashboard/dashboard";
-
-import PricingCards from "@/components/Backend/admin/pricing/pricingcards/pricing";
 import Services from "@/components/Backend/admin/Navbar/Services/Services";
 
 const BlogManagementPage = () => {

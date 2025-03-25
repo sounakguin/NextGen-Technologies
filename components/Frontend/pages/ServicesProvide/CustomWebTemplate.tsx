@@ -140,9 +140,9 @@ export default function CustomWebTemplate() {
         </h1>
         <p className="mb-6 text-gray-600">
           Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard when an unknown
-          printer took a galley of type and scrambled it to make a type specimen
-          book.
+          industry. Lorem Ipsum has been the industry&apos;s standard when an
+          unknown printer took a galley of type and scrambled it to make a type
+          specimen book.
         </p>
         {error && (
           <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-md">

@@ -287,7 +287,7 @@ export default function EditSaaSApp({
 
   const handleImageUpload = async (index: number, file: File) => {
     const filePath = `SaaSApp/${file.name}`;
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("Images")
       .upload(filePath, file, { upsert: true });
 

@@ -11,13 +11,6 @@ import MicroSaasApp from "@/components/Frontend/pages/ServicesProvide/MicroSaasA
 import SaasApp from "@/components/Frontend/pages/ServicesProvide/SaasApp";
 import { Loader2 } from "lucide-react";
 
-// Base interfaces
-interface Service {
-  id: number;
-  name: string;
-  category_id: number;
-}
-
 interface DesignService {
   id: number;
   service_id: number;
@@ -90,7 +83,7 @@ interface MicroSaas {
   service_id: number;
   title: string;
   slug: string;
-  description: any;
+  description: string;
 }
 
 interface MicroSaasTemplate {
@@ -131,16 +124,6 @@ interface SaasAppCategory {
   name: string;
 }
 
-// Utility function to convert service name to URL slug
-function generateServiceSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
 // Utility function to get service name from slug
 function getServiceNameFromSlug(slug: string): string {
   return slug
@@ -155,7 +138,6 @@ export default function ServicePage() {
   const serviceName = params?.serviceName as string;
   const slug = params?.slug as string;
 
-  const [service, setService] = useState<Service | null>(null);
   const [designService, setDesignService] = useState<DesignService | null>(
     null
   );
@@ -202,8 +184,6 @@ export default function ServicePage() {
         if (serviceError || !serviceData) {
           return notFound();
         }
-
-        setService(serviceData);
 
         const fetchHandlers: Record<string, () => Promise<boolean>> = {
           "design-services": async () => {
@@ -393,6 +373,7 @@ export default function ServicePage() {
           return notFound();
         }
       } catch (error) {
+        console.error("Error fetching service details:", error);
         return notFound();
       } finally {
         setIsLoading(false);
@@ -400,7 +381,7 @@ export default function ServicePage() {
     }
 
     fetchServiceDetails();
-  }, [serviceName, slug]);
+  }, [serviceName, slug, supabase]);
 
   if (isLoading) {
     return (

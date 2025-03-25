@@ -201,7 +201,7 @@ export default function EditMicroSaas({
 
   const handleImageUpload = async (index: number, file: File) => {
     const filePath = `Navbar/Services/MicroSaasApp/${Date.now()}_${file.name}`;
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("Images")
       .upload(filePath, file, { upsert: true });
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Filter, Search, Eye, ShoppingCart, ChevronRight } from "lucide-react";
@@ -43,10 +43,8 @@ export default function WebTemplates({
   templates,
   categories = [], // Default value if categories is undefined
 }: WebTemplatesProps) {
-  const router = useRouter();
   const params = useParams();
-
-  const { serviceName, slug } = params as { serviceName: string; slug: string };
+  const { slug } = params as { slug: string };
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("Select");

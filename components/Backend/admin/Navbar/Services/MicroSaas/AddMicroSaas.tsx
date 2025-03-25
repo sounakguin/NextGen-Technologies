@@ -216,7 +216,7 @@ export default function AddMicroSaas({ onClose, onAdd }: AddMicroSaasProps) {
 
   const handleImageUpload = async (index: number, file: File) => {
     const filePath = `Navbar/Services/MicroSaasApp/${file.name}`;
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("Images")
       .upload(filePath, file, { upsert: true });
 

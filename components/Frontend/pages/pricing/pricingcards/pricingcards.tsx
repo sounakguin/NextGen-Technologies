@@ -68,9 +68,30 @@ interface PricingPlan {
   tag?: string;
 }
 
+interface RazorpayError {
+  code: string;
+  description: string;
+  source: string;
+  step: string;
+  reason: string;
+  metadata: Record<string, unknown>;
+}
+
+interface RazorpayResponse {
+  error: RazorpayError | null;
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+interface RazorpayInstance {
+  open: () => void;
+  on: (event: string, callback: (response: RazorpayResponse) => void) => void;
+}
+
 declare global {
   interface Window {
-    Razorpay: any;
+    Razorpay: new (options: Record<string, unknown>) => RazorpayInstance;
   }
 }
 
@@ -136,7 +157,7 @@ const PricingCards: React.FC = () => {
         name: "Webminis",
         description: `Payment for ${plan.name} Plan`,
         order_id: order.id,
-        handler: async (response: any) => {
+        handler: async (response: RazorpayResponse) => {
           try {
             // Verify payment
             const verifyResponse = await fetch("/api/verifyOrder", {
@@ -205,8 +226,10 @@ const PricingCards: React.FC = () => {
       razorpay.open();
 
       // Reset loading state when Razorpay modal is opened
-      razorpay.on("payment.failed", (response: any) => {
-        alert(`Payment Failed: ${response.error.description}`);
+      razorpay.on("payment.failed", (response: RazorpayResponse) => {
+        alert(
+          `Payment Failed: ${response.error?.description || "Unknown error"}`
+        );
         setLoadingPayment(null);
       });
     } catch (error) {
@@ -283,7 +306,13 @@ const PricingCards: React.FC = () => {
           </div>
         );
       })}
-      {showPopup && <BookCallPopup onClose={() => setShowPopup(false)} />}
+      {showPopup && (
+        <BookCallPopup
+          onClose={() => setShowPopup(false)}
+          month_plan={""}
+          slug={""}
+        />
+      )}
     </div>
   );
 };

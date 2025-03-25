@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import createClient from "@/utils/supabase/client";
 import { Button as CustomButton } from "@/components/UI/DebouncedButton";
 import { X, Trash, Edit } from "lucide-react";
@@ -25,7 +25,7 @@ export default function ThirdPartyCategory({
 
   const supabase = createClient();
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
@@ -42,11 +42,11 @@ export default function ThirdPartyCategory({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [supabase]);
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [fetchCategories]);
 
   const handleCreateOrUpdateCategory = async () => {
     if (!name.trim()) {

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 interface ViewServiceProps {
   service: {
@@ -44,10 +45,13 @@ export default function ViewService({ service, onClose }: ViewServiceProps) {
               <label className="block text-gray-700 font-medium mb-1">
                 Sub-Service {index + 1}
               </label>
-              <img
+              <Image
                 src={subService.image}
                 alt={subService.title}
+                width={800}
+                height={256}
                 className="w-full h-32 object-cover rounded-lg"
+                priority
               />
               <p className="w-full p-2 border rounded-lg bg-gray-100">
                 {subService.title}

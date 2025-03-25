@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import createClient from "@/utils/supabase/client";
-import { Button as CustomButton } from "@/components/UI/DebouncedButton";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 interface ViewSaaSAppProps {
   saasAppId: number;
@@ -25,6 +25,10 @@ interface SaaSAppTemplateDetail {
   price: number;
   preview_link: string;
   categories: string[];
+}
+
+interface CategoryRelation {
+  category_id: number;
 }
 
 export default function ViewSaaSApp({ saasAppId, onClose }: ViewSaaSAppProps) {
@@ -66,7 +70,7 @@ export default function ViewSaaSApp({ saasAppId, onClose }: ViewSaaSAppProps) {
               .in(
                 "id",
                 template.saas_app_category_relations.map(
-                  (rel: { category_id: any }) => rel.category_id
+                  (rel: CategoryRelation) => rel.category_id
                 )
               );
 
@@ -158,10 +162,12 @@ export default function ViewSaaSApp({ saasAppId, onClose }: ViewSaaSAppProps) {
                   <label className="block text-gray-700 font-medium mb-1">
                     Thumbnail Image
                   </label>
-                  <img
+                  <Image
                     src={template.thumbnail}
                     alt={template.name}
-                    className="w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
+                    className="object-cover"
                   />
                 </div>
 

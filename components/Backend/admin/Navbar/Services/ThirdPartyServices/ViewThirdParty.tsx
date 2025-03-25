@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import createClient from "@/utils/supabase/client";
 import { Button as CustomButton } from "@/components/UI/DebouncedButton";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 interface ViewThirdPartyProps {
   serviceId: number;
@@ -286,11 +287,13 @@ export default function ViewThirdParty({
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {appDetails.image_gallery.map((image, idx) => (
-                      <img
+                      <Image
                         key={idx}
                         src={image || "/placeholder.svg"}
                         alt={`Gallery ${idx}`}
-                        className="w-24 h-24 object-cover rounded"
+                        width={96}
+                        height={96}
+                        className="object-cover rounded"
                       />
                     ))}
                   </div>
@@ -355,10 +358,12 @@ export default function ViewThirdParty({
                         Card Image
                       </label>
                       {card.card_image && (
-                        <img
+                        <Image
                           src={card.card_image || "/placeholder.svg"}
                           alt={card.card_title}
-                          className="w-24 h-24 object-cover rounded"
+                          width={96}
+                          height={96}
+                          className="object-cover rounded"
                         />
                       )}
                     </div>
@@ -403,10 +408,12 @@ export default function ViewThirdParty({
                         Card Image
                       </label>
                       {card.card_image && (
-                        <img
+                        <Image
                           src={card.card_image || "/placeholder.svg"}
                           alt={card.card_title}
-                          className="w-24 h-24 object-cover rounded"
+                          width={96}
+                          height={96}
+                          className="object-cover rounded"
                         />
                       )}
                     </div>

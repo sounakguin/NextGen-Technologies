@@ -20,10 +20,7 @@ interface Template {
   views: number;
   preview_link: string;
   image_path: string;
-  categories?: Array<{
-    id: number;
-    name: string;
-  }>;
+  categories?: TemplateCategoryRelation[];
 }
 
 interface LandingPage {
@@ -37,7 +34,16 @@ interface LandingPage {
   templates: Template[];
 }
 
-const ITEMS_PER_PAGE = 10;
+interface LandingPageCategory {
+  id: number;
+  name: string;
+  description?: string;
+  created_at?: string;
+}
+
+interface TemplateCategoryRelation {
+  category: LandingPageCategory;
+}
 
 export default function LandingPageManager() {
   const [landingPages, setLandingPages] = useState<LandingPage[]>([]);
@@ -76,19 +82,12 @@ export default function LandingPageManager() {
 
       const formattedLandingPages = landingPagesData.map((page) => ({
         ...page,
-        templates: (page.templates || []).map(
-          (template: { categories: any[] }) => ({
-            ...template,
-            category_ids:
-              template.categories?.map(
-                (cat: { category: { id: any } }) => cat.category.id
-              ) || [],
-            categories:
-              template.categories?.map(
-                (cat: { category: any }) => cat.category
-              ) || [],
-          })
-        ),
+        templates: (page.templates || []).map((template: Template) => ({
+          ...template,
+          category_ids:
+            template.categories?.map((cat) => cat.category.id) || [],
+          categories: template.categories || [],
+        })),
       }));
 
       setLandingPages(formattedLandingPages);
@@ -123,6 +122,7 @@ export default function LandingPageManager() {
     }
   };
 
+  const ITEMS_PER_PAGE = 10; // Define the number of items per page
   const totalPages = Math.ceil(landingPages.length / ITEMS_PER_PAGE);
   const paginatedLandingPages = landingPages.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -262,7 +262,16 @@ export default function LandingPageManager() {
 
       {isViewModalOpen && currentLandingPage && (
         <ViewLandingPage
-          landingPage={currentLandingPage}
+          landingPage={{
+            ...currentLandingPage,
+            templates: currentLandingPage.templates.map((template) => ({
+              ...template,
+              categories: template.categories?.map((cat) => ({
+                id: cat.category.id,
+                name: cat.category.name,
+              })),
+            })),
+          }}
           onClose={() => {
             setIsViewModalOpen(false);
             setCurrentLandingPage(null);

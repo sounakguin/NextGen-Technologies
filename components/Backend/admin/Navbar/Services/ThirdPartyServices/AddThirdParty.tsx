@@ -5,6 +5,7 @@ import createClient from "@/utils/supabase/client";
 import { Button as CustomButton } from "@/components/UI/DebouncedButton";
 import { X, Trash, Plus } from "lucide-react";
 import RichTextEditor from "@/components/UI/Texteditor";
+import Image from "next/image";
 
 interface AddThirdPartyProps {
   onClose: () => void;
@@ -333,7 +334,7 @@ export default function AddThirdParty({ onClose, onAdd }: AddThirdPartyProps) {
     file: File
   ) => {
     const filePath = `ThirdPartyServices/${file.name}`;
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("Images")
       .upload(filePath, file, { upsert: true });
 
@@ -490,10 +491,12 @@ export default function AddThirdParty({ onClose, onAdd }: AddThirdPartyProps) {
                 <div className="flex flex-wrap gap-2 mb-2">
                   {appDetails.image_gallery.map((image, idx) => (
                     <div key={idx} className="relative">
-                      <img
+                      <Image
                         src={image || "/placeholder.svg"}
                         alt={`Gallery ${idx}`}
-                        className="w-20 h-20 object-cover rounded"
+                        width={80}
+                        height={80}
+                        className="object-cover rounded"
                       />
                       <button
                         onClick={() => {
@@ -610,10 +613,12 @@ export default function AddThirdParty({ onClose, onAdd }: AddThirdPartyProps) {
                     Card Image
                   </label>
                   {card.card_image && (
-                    <img
+                    <Image
                       src={card.card_image || "/placeholder.svg"}
                       alt="Card"
-                      className="w-20 h-20 object-cover rounded mb-2"
+                      width={80}
+                      height={80}
+                      className="object-cover rounded mb-2"
                     />
                   )}
                   <input
@@ -729,10 +734,12 @@ export default function AddThirdParty({ onClose, onAdd }: AddThirdPartyProps) {
                     Card Image
                   </label>
                   {card.card_image && (
-                    <img
+                    <Image
                       src={card.card_image || "/placeholder.svg"}
                       alt="Card"
-                      className="w-20 h-20 object-cover rounded mb-2"
+                      width={80}
+                      height={80}
+                      className="object-cover rounded mb-2"
                     />
                   )}
                   <input

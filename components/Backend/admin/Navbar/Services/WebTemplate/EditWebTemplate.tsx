@@ -56,7 +56,8 @@ export default function EditWebTemplate({
   const supabase = createClient();
 
   useEffect(() => {
-    const fetchTemplateData = async () => {
+    const fetchData = async () => {
+      // Fetch template data
       const { data: templateData, error: templateError } = await supabase
         .from("web_template")
         .select("*")
@@ -68,10 +69,32 @@ export default function EditWebTemplate({
         return;
       }
 
+      // Fetch services
+      const { data: servicesData, error: servicesError } = await supabase
+        .from("services")
+        .select("*");
+
+      if (servicesError) {
+        console.error("Error fetching services:", servicesError);
+        return;
+      }
+
+      // Fetch categories
+      const { data: categoriesData, error: categoriesError } = await supabase
+        .from("webtemplate_categories")
+        .select("*");
+
+      if (categoriesError) {
+        console.error("Error fetching categories:", categoriesError);
+        return;
+      }
+
       setTitle(templateData.title);
       setDescription(templateData.description);
       setSlug(templateData.slug);
       setSelectedServiceId(templateData.service_id);
+      setServices(servicesData);
+      setCategories(categoriesData);
 
       const { data: templateDetails, error: detailsError } = await supabase
         .from("web_templates")
@@ -105,7 +128,7 @@ export default function EditWebTemplate({
       setTemplates(templatesWithCategories);
     };
 
-    fetchTemplateData();
+    fetchData();
   }, [templateId, supabase]);
 
   const validateInputs = () => {
@@ -263,7 +286,7 @@ export default function EditWebTemplate({
 
   const handleImageUpload = async (index: number, file: File) => {
     const filePath = `WebTemplates/${file.name}`;
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("Images")
       .upload(filePath, file, { upsert: true });
 

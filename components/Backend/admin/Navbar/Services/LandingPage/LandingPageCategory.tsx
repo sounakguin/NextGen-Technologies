@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import createClient from "@/utils/supabase/client";
 import { Button as CustomButton } from "@/components/UI/DebouncedButton";
-import { X, Trash, Edit, Plus } from "lucide-react";
+import { X, Trash, Edit } from "lucide-react";
 
 interface ServiceCategory {
   id: number;

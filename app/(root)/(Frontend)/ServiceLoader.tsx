@@ -1,13 +1,44 @@
-// components/ServiceLoader.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import createClient from "@/utils/supabase/client";
-import { AlertCircle, Loader2, ArrowLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
+
+interface BaseServiceItem {
+  id: number;
+  name: string;
+  description?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface Category extends BaseServiceItem {
+  slug?: string;
+  icon?: string;
+}
+
+interface Template extends BaseServiceItem {
+  preview_url?: string;
+  demo_url?: string;
+  price?: number;
+}
+
+interface Plan extends BaseServiceItem {
+  price?: number;
+  features?: string[];
+  duration?: string;
+}
+
+interface ServiceData {
+  service: BaseServiceItem;
+  categories?: Category[];
+  templates?: Template[];
+  plans?: Plan[];
+}
 
 interface ServiceLoaderProps {
-  children: (props: any) => React.ReactNode;
+  children: (props: ServiceData | null) => React.ReactNode;
 }
 
 const ServiceLoader = ({ children }: ServiceLoaderProps) => {
@@ -16,7 +47,7 @@ const ServiceLoader = ({ children }: ServiceLoaderProps) => {
   const serviceName = params?.serviceName as string;
   const slug = params?.slug as string;
 
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ServiceData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<{
     message: string;
@@ -229,13 +260,28 @@ const ServiceLoader = ({ children }: ServiceLoaderProps) => {
     }
 
     fetchServiceDetails();
-  }, [serviceName, slug]);
+  }, [serviceName, slug, supabase]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-center">
+        <h2 className="text-xl font-semibold text-red-600">{error.message}</h2>
+        {error.details && (
+          <ul className="mt-2 text-sm text-gray-600">
+            {error.details.map((detail, index) => (
+              <li key={index}>{detail}</li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   }

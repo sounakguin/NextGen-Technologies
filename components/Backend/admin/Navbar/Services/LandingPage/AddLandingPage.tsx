@@ -282,7 +282,7 @@ export default function AddLandingPage({
 
   const handleImageUpload = async (index: number, file: File) => {
     const filePath = `Navbar/Services/LandingPages/${file.name}`; // Updated path
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("Images")
       .upload(filePath, file, { upsert: true });
 

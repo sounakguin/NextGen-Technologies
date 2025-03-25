@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import createClient from "@/utils/supabase/client";
 import { Button as CustomButton } from "@/components/UI/DebouncedButton";
 import { X, Trash, Edit } from "lucide-react";
@@ -22,7 +22,7 @@ export default function SaaSAppCategory({ onClose }: { onClose: () => void }) {
 
   const supabase = createClient();
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
@@ -39,11 +39,11 @@ export default function SaaSAppCategory({ onClose }: { onClose: () => void }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [supabase]);
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [fetchCategories]);
 
   const handleCreateOrUpdateCategory = async () => {
     if (!name.trim()) {

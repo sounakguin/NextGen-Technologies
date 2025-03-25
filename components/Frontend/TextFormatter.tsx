@@ -1,18 +1,37 @@
 import React from "react";
+import Image from "next/image";
 
 interface TextFormatterProps {
   description: string;
 }
 
-const renderTextContent = (content: any[], parentKey: string) => {
-  return content.map((textBlock: any, index: number) => {
+interface TextMark {
+  type: "bold" | "italic" | "underline" | "link";
+  attrs?: {
+    href?: string;
+  };
+}
+
+interface TextBlock {
+  text?: string;
+  content?: TextBlock[];
+  marks?: TextMark[];
+  type?: string;
+  attrs?: {
+    src?: string;
+    alt?: string;
+  };
+}
+
+const renderTextContent = (content: TextBlock[], parentKey: string) => {
+  return content.map((textBlock: TextBlock, index: number) => {
     if (!textBlock.text && !textBlock.content) return null;
 
-    let text = textBlock.text || "";
+    let text: React.ReactNode = textBlock.text || "";
 
     // Handle nested marks
     if (textBlock.marks) {
-      textBlock.marks.forEach((mark: any) => {
+      textBlock.marks.forEach((mark: TextMark) => {
         switch (mark.type) {
           case "bold":
             text = <strong key={`${parentKey}-bold-${index}`}>{text}</strong>;
@@ -55,7 +74,7 @@ const extractFormattedText = (description: string) => {
     }
 
     if (parsed.type === "doc" && Array.isArray(parsed.content)) {
-      return parsed.content.map((block: any, blockIndex: number) => {
+      return parsed.content.map((block: TextBlock, blockIndex: number) => {
         const blockKey = `block-${blockIndex}`;
 
         switch (block.type) {
@@ -69,30 +88,34 @@ const extractFormattedText = (description: string) => {
           case "bulletList":
             return (
               <ul key={blockKey} className="list-disc ml-6 mb-4 space-y-2">
-                {block.content?.map((listItem: any, listIndex: number) => (
-                  <li key={`${blockKey}-item-${listIndex}`}>
-                    {listItem.content?.[0]?.content &&
-                      renderTextContent(
-                        listItem.content[0].content,
-                        `${blockKey}-item-${listIndex}`
-                      )}
-                  </li>
-                ))}
+                {block.content?.map(
+                  (listItem: TextBlock, listIndex: number) => (
+                    <li key={`${blockKey}-item-${listIndex}`}>
+                      {listItem.content?.[0]?.content &&
+                        renderTextContent(
+                          listItem.content[0].content,
+                          `${blockKey}-item-${listIndex}`
+                        )}
+                    </li>
+                  )
+                )}
               </ul>
             );
 
           case "orderedList":
             return (
               <ol key={blockKey} className="list-decimal ml-6 mb-4 space-y-2">
-                {block.content?.map((listItem: any, listIndex: number) => (
-                  <li key={`${blockKey}-item-${listIndex}`}>
-                    {listItem.content?.[0]?.content &&
-                      renderTextContent(
-                        listItem.content[0].content,
-                        `${blockKey}-item-${listIndex}`
-                      )}
-                  </li>
-                ))}
+                {block.content?.map(
+                  (listItem: TextBlock, listIndex: number) => (
+                    <li key={`${blockKey}-item-${listIndex}`}>
+                      {listItem.content?.[0]?.content &&
+                        renderTextContent(
+                          listItem.content[0].content,
+                          `${blockKey}-item-${listIndex}`
+                        )}
+                    </li>
+                  )
+                )}
               </ol>
             );
 
@@ -105,14 +128,16 @@ const extractFormattedText = (description: string) => {
             );
 
           case "image":
-            return (
-              <img
-                key={blockKey}
-                src={block.attrs?.src}
-                alt={block.attrs?.alt || ""}
-                className="my-4 max-w-full h-auto rounded-lg shadow-md"
-              />
-            );
+            return block.attrs?.src ? (
+              <div key={blockKey} className="relative w-full h-[300px] my-4">
+                <Image
+                  src={block.attrs.src}
+                  alt={block.attrs?.alt || ""}
+                  fill
+                  className="object-contain rounded-lg shadow-md"
+                />
+              </div>
+            ) : null;
 
           default:
             return null;

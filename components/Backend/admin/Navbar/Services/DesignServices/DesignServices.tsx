@@ -14,7 +14,7 @@ interface MonthlyPlan {
   id: number;
   title: string;
   description: string;
-  features: any[];
+  features: string; // Changed from any[] to string
   design_services_id: number;
   created_at: string;
   updated_at: string;

@@ -22,6 +22,13 @@ interface EditServiceProps {
   onUpdate: () => void;
 }
 
+interface ServiceCategory {
+  id: number;
+  name: string;
+  description?: string;
+  created_at?: string;
+}
+
 export default function EditService({
   service,
   onClose,
@@ -29,7 +36,7 @@ export default function EditService({
 }: EditServiceProps) {
   const [name, setName] = useState(service.name);
   const [categoryId, setCategoryId] = useState(service.category_id);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [subServices, setSubServices] = useState(service.sub_services);
   const [errors, setErrors] = useState({
     name: "",
@@ -146,7 +153,7 @@ export default function EditService({
       const filePath = `Navbar/Services/SubServicesIcons/${Date.now()}_${
         file.name
       }`;
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from("Images")
         .upload(filePath, file);
 

@@ -9,12 +9,27 @@ interface ViewMicroSaasProps {
   microSaasId: number;
 }
 
+interface MicroSaas {
+  id: number;
+  title: string;
+  description: string;
+  slug: string;
+}
+
+interface MicroSaasTemplate {
+  id: number;
+  name: string;
+  price: number;
+  preview_link: string;
+  micro_saas_id: number;
+}
+
 export default function ViewMicroSaas({
   onClose,
   microSaasId,
 }: ViewMicroSaasProps) {
-  const [microSaas, setMicroSaas] = useState<any>(null);
-  const [templates, setTemplates] = useState<any[]>([]);
+  const [microSaas, setMicroSaas] = useState<MicroSaas | null>(null);
+  const [templates, setTemplates] = useState<MicroSaasTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const supabase = createClient();

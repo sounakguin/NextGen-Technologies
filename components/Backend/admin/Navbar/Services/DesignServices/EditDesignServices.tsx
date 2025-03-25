@@ -9,7 +9,7 @@ interface MonthlyPlan {
   id: number;
   title: string;
   description: string;
-  features: string;
+  features: string; // Ensure consistency with DesignServices.tsx
   design_services_id?: number;
 }
 
@@ -40,11 +40,10 @@ export default function EditDesignService({
   const [monthlyPlans, setMonthlyPlans] = useState<MonthlyPlan[]>(
     service.monthly_plans.map((plan) => ({
       ...plan,
-      features: Array.isArray(plan.features)
-        ? plan.features
-        : typeof plan.features === "string"
-        ? JSON.parse(plan.features)
-        : [],
+      features:
+        typeof plan.features === "string"
+          ? plan.features
+          : JSON.stringify(plan.features),
     }))
   );
   const [errors, setErrors] = useState({
